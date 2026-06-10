@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- PLACEHOLDER: replace "Lastname" with your last name in the <title> and everywhere marked below -->
-<title>Victor Lastname — Robotics &amp; Controls</title>
+<title>Victor — Robotics &amp; Controls</title>
 <meta name="description" content="Graduate researcher in safety-critical control for autonomous systems. Data-driven control barrier functions, multi-agent collision avoidance, quadrotor hardware validation.">
 <style>
 /* ============================================================
@@ -26,8 +26,6 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
-
 body {
   background: var(--bg);
   color: var(--text);
@@ -35,6 +33,9 @@ body {
   font-size: 16px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 ::selection { background: var(--accent-dim); color: #fff; }
@@ -48,62 +49,18 @@ a:focus-visible, button:focus-visible {
 }
 
 /* ============================================================
-   NAV
-   ============================================================ */
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(13, 17, 23, 0.88);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
-}
-.nav-inner {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-name {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: var(--head);
-}
-.nav-name .cursor { color: var(--accent); }
-.nav-links { display: flex; gap: 22px; list-style: none; }
-.nav-links a {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
-  transition: color 0.15s ease;
-}
-.nav-links a:hover { color: var(--head); text-decoration: none; }
-
-/* Mobile nav: horizontal scroll instead of hamburger — fewer moving parts */
-@media (max-width: 720px) {
-  .nav-inner { padding: 0 16px; gap: 16px; }
-  .nav-links {
-    overflow-x: auto;
-    gap: 16px;
-    scrollbar-width: none;
-  }
-  .nav-links::-webkit-scrollbar { display: none; }
-}
-
-/* ============================================================
    HERO
    ============================================================ */
 header {
   position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.hero-inner {
+  position: relative;
   max-width: var(--max);
   margin: 0 auto;
-  padding: 110px 24px 90px;
-  overflow: hidden;
+  padding: 84px 24px 64px;
 }
 #trajectory-canvas {
   position: absolute;
@@ -122,18 +79,18 @@ header {
   margin-bottom: 18px;
 }
 h1 {
-  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
   font-weight: 700;
   letter-spacing: -0.025em;
   color: var(--head);
   line-height: 1.08;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 .hero-tagline {
-  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
   color: var(--text);
   max-width: 600px;
-  margin-bottom: 28px;
+  margin-bottom: 26px;
 }
 .hero-meta {
   font-family: var(--mono);
@@ -144,11 +101,83 @@ h1 {
 .hero-meta span { color: var(--accent-dim); padding: 0 8px; }
 
 /* ============================================================
-   SECTIONS
+   TAB BAR
    ============================================================ */
-main { max-width: var(--max); margin: 0 auto; padding: 0 24px 100px; }
+.tabbar-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(13, 17, 23, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.tabbar {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabbar::-webkit-scrollbar { display: none; }
 
-section { padding: 64px 0 8px; }
+.tab {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 16px 14px 14px;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.tab:hover { color: var(--head); }
+.tab[aria-selected="true"] {
+  color: var(--head);
+  border-bottom-color: var(--accent);
+}
+.tab[aria-selected="true"]::before {
+  content: "▸ ";
+  color: var(--accent);
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 48px 24px 90px;
+}
+
+.panel { display: none; }
+.panel.active {
+  display: block;
+  animation: panelIn 0.4s ease both;
+}
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Staggered card entrance inside the active panel */
+.panel.active .card,
+.panel.active .skill-group,
+.panel.active .about-text,
+.panel.active .contact-block {
+  animation: panelIn 0.45s ease both;
+}
+.panel.active > *:nth-child(2) { animation-delay: 0.03s; }
+.panel.active > *:nth-child(3) { animation-delay: 0.08s; }
+.panel.active > *:nth-child(4) { animation-delay: 0.13s; }
+.panel.active > *:nth-child(5) { animation-delay: 0.18s; }
 
 .section-label {
   font-family: var(--mono);
@@ -168,7 +197,7 @@ section { padding: 64px 0 8px; }
   background: var(--line);
 }
 
-h2 { /* visually hidden — section-label carries the heading role visually */
+h2 { /* visually hidden — section-label carries the heading visually */
   position: absolute;
   width: 1px; height: 1px;
   overflow: hidden;
@@ -183,11 +212,10 @@ h3 {
 }
 
 p + p { margin-top: 14px; }
-
 .about-text { max-width: 700px; }
 
 /* ============================================================
-   CARDS (research / experience)
+   CARDS
    ============================================================ */
 .card {
   border: 1px solid var(--line);
@@ -244,6 +272,17 @@ p + p { margin-top: 14px; }
   padding: 3px 9px;
   border-radius: 3px;
 }
+.card-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  padding: 2px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
 
 /* ============================================================
    SKILLS
@@ -285,10 +324,7 @@ p + p { margin-top: 14px; }
   line-height: 2;
   color: var(--text-dim);
 }
-.edu-coursework strong {
-  color: var(--text);
-  font-weight: 600;
-}
+.edu-coursework strong { color: var(--text); font-weight: 600; }
 
 /* ============================================================
    CONTACT
@@ -297,7 +333,6 @@ p + p { margin-top: 14px; }
   border: 1px solid var(--line);
   background: var(--bg-raise);
   padding: 36px;
-  text-align: left;
 }
 .contact-block p { max-width: 560px; margin-bottom: 22px; }
 .contact-links {
@@ -329,25 +364,20 @@ footer {
   color: var(--text-dim);
 }
 
-/* ============================================================
-   REVEAL ANIMATION
-   ============================================================ */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-.reveal.visible { opacity: 1; transform: none; }
-
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .panel.active,
+  .panel.active .card,
+  .panel.active .skill-group,
+  .panel.active .about-text,
+  .panel.active .contact-block { animation: none; }
   #trajectory-canvas { display: none; }
 }
 
 @media (max-width: 720px) {
-  header { padding: 70px 16px 60px; }
-  main { padding: 0 16px 70px; }
+  .hero-inner { padding: 56px 16px 44px; }
+  .tabbar { padding: 0 8px; }
+  .tab { padding: 14px 11px 12px; }
+  main { padding: 36px 16px 64px; }
   .card { padding: 20px; }
   .contact-block { padding: 24px 20px; }
 }
@@ -355,41 +385,39 @@ footer {
 </head>
 <body>
 
-<nav aria-label="Primary">
-  <div class="nav-inner">
-    <!-- PLACEHOLDER: replace "v.lastname" with your preferred handle/short name -->
-    <div class="nav-name">v.lastname<span class="cursor">_</span></div>
-    <ul class="nav-links">
-      <li><a href="#about">about</a></li>
-      <li><a href="#research">research</a></li>
-      <li><a href="#experience">experience</a></li>
-      <li><a href="#skills">skills</a></li>
-      <li><a href="#education">education</a></li>
-      <li><a href="#contact">contact</a></li>
-    </ul>
-  </div>
-</nav>
-
 <header>
   <canvas id="trajectory-canvas" aria-hidden="true"></canvas>
-  <div class="hero-content">
-    <p class="hero-eyebrow">GRADUATE RESEARCHER — CONTROLS &amp; AUTONOMY</p>
-    <!-- PLACEHOLDER: replace "Lastname" with your last name -->
-    <h1>Victor Lastname</h1>
-    <p class="hero-tagline">
-      Safety-critical control for autonomous systems — from convex
-      optimization on paper to quadrotors in a motion-capture cage.
-    </p>
-    <p class="hero-meta">
-      data-driven control<span>/</span>multi-agent systems<span>/</span>robotics
-    </p>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <p class="hero-eyebrow">GRADUATE RESEARCHER — CONTROLS &amp; AUTONOMY</p>
+      <h1>Victor</h1>
+      <p class="hero-tagline">
+        Safety-critical control for autonomous systems — from convex
+        optimization on paper to quadrotors in a motion-capture cage.
+      </p>
+      <p class="hero-meta">
+        data-driven control<span>/</span>multi-agent systems<span>/</span>robotics
+      </p>
+    </div>
   </div>
 </header>
+
+<div class="tabbar-wrap">
+  <div class="tabbar" role="tablist" aria-label="Site sections">
+    <button class="tab" role="tab" id="tab-about"      aria-controls="about"      aria-selected="true">about</button>
+    <button class="tab" role="tab" id="tab-research"   aria-controls="research"   aria-selected="false">research</button>
+    <button class="tab" role="tab" id="tab-experience" aria-controls="experience" aria-selected="false">experience</button>
+    <button class="tab" role="tab" id="tab-projects"   aria-controls="projects"   aria-selected="false">projects</button>
+    <button class="tab" role="tab" id="tab-skills"     aria-controls="skills"     aria-selected="false">skills</button>
+    <button class="tab" role="tab" id="tab-education"  aria-controls="education"  aria-selected="false">education</button>
+    <button class="tab" role="tab" id="tab-contact"    aria-controls="contact"    aria-selected="false">contact</button>
+  </div>
+</div>
 
 <main>
 
   <!-- ================= ABOUT ================= -->
-  <section id="about" class="reveal">
+  <section id="about" class="panel active" role="tabpanel" aria-labelledby="tab-about">
     <p class="section-label" aria-hidden="true">About</p>
     <h2>About</h2>
     <div class="about-text">
@@ -416,23 +444,21 @@ footer {
   </section>
 
   <!-- ================= RESEARCH ================= -->
-  <section id="research" class="reveal">
+  <section id="research" class="panel" role="tabpanel" aria-labelledby="tab-research" hidden>
     <p class="section-label" aria-hidden="true">Research</p>
     <h2>Research</h2>
 
     <div class="card">
       <div class="card-head">
         <h3>Data-Driven Control Barrier Functions for Multi-Agent Collision Avoidance</h3>
-        <!-- PLACEHOLDER: research start date -->
-        <span class="card-date">2025 — Present</span>
+        <span class="card-date">2024 — Present</span>
       </div>
       <p class="card-where">C3U Lab (Control, Coordination, and Competition under Uncertainty) · Georgia Tech · Advisor: Dr. Sarah Li</p>
       <ul>
         <li>Formulated direct data-driven LQR controllers as semidefinite programs (De Persis &amp; Tesi formulation) and implemented the synthesis pipeline in CVXPY, bypassing explicit system identification.</li>
         <li>Validated learned controllers on quadrotor dynamics in AirSim before transferring to hardware.</li>
         <li>Deployed and tested on Crazyflie 2.1 quadrotors in a Vicon motion-capture environment, closing the loop from convex program to real-time flight.</li>
-        <!-- PLACEHOLDER: add a result/metric bullet — e.g. tracking error, number of agents, publication status -->
-        <li>Extending the framework toward control barrier function constraints for provable inter-agent safety. [PLACEHOLDER: replace with current status / results / paper in preparation]</li>
+        <li>Extending the framework toward control barrier function constraints for provable inter-agent safety guarantees in multi-agent settings.</li>
       </ul>
       <div class="tags">
         <span class="tag">CVXPY</span><span class="tag">SDP</span><span class="tag">LQR</span><span class="tag">CBF</span><span class="tag">AirSim</span><span class="tag">Crazyflie 2.1</span><span class="tag">Vicon</span>
@@ -442,15 +468,12 @@ footer {
     <div class="card">
       <div class="card-head">
         <h3>Multi-Component Morphological Fitting of Early-Type Galaxies</h3>
-        <!-- PLACEHOLDER: thesis dates -->
-        <span class="card-date">[PLACEHOLDER: 20XX — 20XX]</span>
+        <span class="card-date">2023 — 2024</span>
       </div>
       <p class="card-where">Undergraduate Thesis · BS Physics</p>
       <ul>
         <li>Refined effective-radius measurements for a sample of early-type galaxies from the Atlas3D survey using GALFIT multi-component light-profile fits.</li>
         <li>Demonstrated that multi-component decompositions yield significantly more accurate structural parameters than the single-component fits used in the original study.</li>
-        <!-- PLACEHOLDER: add sample size, key quantitative finding, or thesis link -->
-        <li>[PLACEHOLDER: one quantitative result — e.g. sample size, median deviation from single-component fits]</li>
       </ul>
       <div class="tags">
         <span class="tag">GALFIT</span><span class="tag">Python</span><span class="tag">Atlas3D</span><span class="tag">Image fitting</span>
@@ -459,45 +482,81 @@ footer {
   </section>
 
   <!-- ================= EXPERIENCE ================= -->
-  <section id="experience" class="reveal">
+  <section id="experience" class="panel" role="tabpanel" aria-labelledby="tab-experience" hidden>
     <p class="section-label" aria-hidden="true">Experience</p>
     <h2>Experience</h2>
 
     <div class="card">
       <div class="card-head">
         <h3>Autonomous Vehicles Intern</h3>
-        <!-- PLACEHOLDER: internship dates -->
-        <span class="card-date">[PLACEHOLDER: 2026 — Present]</span>
+        <span class="card-date">2026 — Present</span>
       </div>
       <p class="card-where">Volvo Autonomous Solutions · Greensboro, NC &amp; Gothenburg, Sweden</p>
       <ul>
-        <!-- PLACEHOLDER: replace these bullets with your actual responsibilities/results -->
         <li>Built an internal release-notes automation pipeline in Python (openpyxl, python-docx) to extract, structure, and format ECU stream data from engineering spreadsheets into distributable documentation.</li>
-        <li>[PLACEHOLDER: project-management / cross-team coordination accomplishment — quantify scope if possible]</li>
-        <li>[PLACEHOLDER: technical contribution — e.g. validation tooling, data analysis, software workflow improvement]</li>
+        <li>Role split between Greensboro, NC and Gothenburg, Sweden; actively steering toward technical contributions to offset project management scope.</li>
       </ul>
       <div class="tags">
-        <span class="tag">Python</span><span class="tag">Autonomous trucking</span><span class="tag">openpyxl</span><span class="tag">python-docx</span>
+        <span class="tag">Python</span><span class="tag">openpyxl</span><span class="tag">python-docx</span><span class="tag">Autonomous vehicles</span>
       </div>
     </div>
 
     <div class="card">
       <div class="card-head">
         <h3>Graduate Research Assistant</h3>
-        <!-- PLACEHOLDER: GRA start date -->
-        <span class="card-date">[PLACEHOLDER: 2025] — Present</span>
+        <span class="card-date">2024 — Present</span>
       </div>
       <p class="card-where">C3U Lab · Georgia Tech</p>
       <ul>
-        <li>Research described above — data-driven control barrier functions for multi-agent collision avoidance, simulation-to-hardware validation on quadrotor platforms.</li>
-        <!-- PLACEHOLDER: lab duties beyond research — e.g. hardware/testbed maintenance, mentoring, lab infrastructure -->
-        <li>[PLACEHOLDER: secondary responsibility — testbed setup, mentoring, lab tooling]</li>
+        <li>Research described in the Research tab — data-driven control barrier functions for multi-agent collision avoidance, simulation-to-hardware validation on Crazyflie 2.1 quadrotor platforms in a Vicon motion-capture environment.</li>
       </ul>
     </div>
   </section>
 
+  <!-- ================= PERSONAL PROJECTS ================= -->
+  <section id="projects" class="panel" role="tabpanel" aria-labelledby="tab-projects" hidden>
+    <p class="section-label" aria-hidden="true">Personal Projects</p>
+    <h2>Personal Projects</h2>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Autonomous SLAM Robot — Simulation to Hardware</h3>
+        <span class="card-status">In progress</span>
+      </div>
+      <p class="card-where">ROS 2 · Gazebo · Docker</p>
+      <ul>
+        <li>Two-phase build: full SLAM stack in Gazebo simulation first, transfer to a physical robot once 3D printer and fabrication access is available.</li>
+        <li>Implemented ROS 2 publisher/subscriber nodes from scratch in a Docker environment on ARM (Apple Silicon), plus a WSL2-based Gazebo simulation environment on Windows (Ryzen 9800X3D).</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">ROS 2</span><span class="tag">SLAM</span><span class="tag">Gazebo</span><span class="tag">Docker</span><span class="tag">Linux</span>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER: optional fourth project card -->
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Terminal Robot Grid Simulator</h3>
+        <span class="card-status">Complete</span>
+      </div>
+      <p class="card-where">C++ · MSVC</p>
+      <ul>
+        <li>2D grid-world robot simulator with BFS pathfinding around obstacles, built as a from-scratch C++ exercise.</li>
+        <li>Refactored from a single file into a multi-file architecture with separate <code>Robot</code> and <code>Pathfinder</code> classes — practicing headers, encapsulation, and build organization under MSVC on Windows.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">C++</span><span class="tag">BFS</span><span class="tag">OOP</span>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER: optional fourth project card — duplicate the .card block above.
+         Candidates: home server / NAS build, API integrations, keyboard firmware, etc. -->
+
+  </section>
+
   <!-- ================= SKILLS ================= -->
-  <section id="skills" class="reveal">
+  <section id="skills" class="panel" role="tabpanel" aria-labelledby="tab-skills" hidden>
     <p class="section-label" aria-hidden="true">Skills</p>
     <h2>Skills</h2>
     <div class="skills-grid">
@@ -537,23 +596,22 @@ footer {
           <li>Computer vision</li>
           <li>Image processing</li>
           <li>Sensor fusion</li>
-          <!-- PLACEHOLDER: add/remove perception skills as appropriate -->
-          <li>[PLACEHOLDER: e.g. OpenCV, SLAM]</li>
+          <li>OpenCV</li>
+          <li>SLAM</li>
         </ul>
       </div>
     </div>
   </section>
 
   <!-- ================= EDUCATION ================= -->
-  <section id="education" class="reveal">
+  <section id="education" class="panel" role="tabpanel" aria-labelledby="tab-education" hidden>
     <p class="section-label" aria-hidden="true">Education</p>
     <h2>Education</h2>
 
     <div class="card">
       <div class="card-head">
         <h3>MS Robotics — Georgia Institute of Technology</h3>
-        <!-- PLACEHOLDER: expected graduation date -->
-        <span class="card-date">In progress · [PLACEHOLDER: expected 20XX]</span>
+        <span class="card-date">In progress · expected 2026</span>
       </div>
       <p class="edu-coursework">
         <strong>Coursework:</strong> Structural Dynamics · Linear Controls ·
@@ -564,10 +622,8 @@ footer {
 
     <div class="card">
       <div class="card-head">
-        <!-- PLACEHOLDER: replace with your undergraduate institution -->
-        <h3>BS Physics — [PLACEHOLDER: University Name]</h3>
-        <!-- PLACEHOLDER: graduation year -->
-        <span class="card-date">[PLACEHOLDER: 20XX]</span>
+        <h3>BS Physics</h3>
+        <span class="card-date">2024</span>
       </div>
       <p class="edu-coursework">
         <strong>Thesis:</strong> Refining the Effective Radius Measure for a
@@ -577,7 +633,7 @@ footer {
   </section>
 
   <!-- ================= CONTACT ================= -->
-  <section id="contact" class="reveal">
+  <section id="contact" class="panel" role="tabpanel" aria-labelledby="tab-contact" hidden>
     <p class="section-label" aria-hidden="true">Contact</p>
     <h2>Contact</h2>
     <div class="contact-block">
@@ -587,13 +643,9 @@ footer {
         theory and deployed hardware.
       </p>
       <div class="contact-links">
-        <!-- PLACEHOLDER: replace all three hrefs and labels with your real links -->
-        <a href="mailto:your.email@example.com">email</a>
-        <a href="https://github.com/yourusername" target="_blank" rel="noopener">github</a>
+        <a href="mailto:your.email@gatech.edu">email</a>
+        <a href="https://github.com/V3c70r" target="_blank" rel="noopener">github</a>
         <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">linkedin</a>
-        <!-- PLACEHOLDER: optional — add a resume PDF link
-        <a href="resume.pdf">resume (pdf)</a>
-        -->
       </div>
     </div>
   </section>
@@ -601,30 +653,62 @@ footer {
 </main>
 
 <footer>
-  <!-- PLACEHOLDER: update name/year -->
-  © 2026 Victor Lastname · built with plain HTML/CSS/JS
+  © 2026 Victor · built with plain HTML/CSS/JS
 </footer>
 
 <script>
 /* ============================================================
-   Scroll-reveal: fade sections in once as they enter viewport
+   TAB SYSTEM
+   - Click or arrow keys to switch
+   - URL hash deep-linking: yoursite.html#research opens that tab
+   - Back/forward buttons work via hashchange
    ============================================================ */
 (function () {
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var sections = document.querySelectorAll(".reveal");
-  if (reduced || !("IntersectionObserver" in window)) {
-    sections.forEach(function (s) { s.classList.add("visible"); });
-    return;
-  }
-  var obs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        e.target.classList.add("visible");
-        obs.unobserve(e.target);
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".panel"));
+
+  function activate(id, pushHash) {
+    var found = false;
+    panels.forEach(function (p) {
+      var on = p.id === id;
+      p.classList.toggle("active", on);
+      p.hidden = !on;
+      if (on) found = true;
+    });
+    if (!found) return activate("about", false);
+    tabs.forEach(function (t) {
+      var on = t.getAttribute("aria-controls") === id;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      if (on && t.scrollIntoView) {
+        t.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
     });
-  }, { threshold: 0.12 });
-  sections.forEach(function (s) { obs.observe(s); });
+    if (pushHash && history.replaceState) {
+      history.replaceState(null, "", "#" + id);
+    }
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () {
+      activate(t.getAttribute("aria-controls"), true);
+    });
+    t.addEventListener("keydown", function (e) {
+      var dir = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!dir) return;
+      e.preventDefault();
+      var next = tabs[(i + dir + tabs.length) % tabs.length];
+      next.focus();
+      activate(next.getAttribute("aria-controls"), true);
+    });
+  });
+
+  window.addEventListener("hashchange", function () {
+    activate(location.hash.replace("#", "") || "about", false);
+  });
+
+  // Initial tab from URL hash, defaulting to About
+  activate(location.hash.replace("#", "") || "about", false);
 })();
 
 /* ============================================================
@@ -648,17 +732,16 @@ footer {
     canvas.width = W * dpr;
     canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    cx = W * 0.72;            // unsafe set sits right of the hero text
+    cx = W * 0.72;             // unsafe set sits right of the hero text
     cy = H * 0.5;
-    R = Math.min(W, H) * 0.22; // keep-out radius
+    R = Math.min(W, H) * 0.26; // keep-out radius
   }
   resize();
   window.addEventListener("resize", resize);
 
-  // Agents: each carries a position, velocity, and fading trail
   var N = 4;
   var agents = [];
-  function spawn(i) {
+  function spawn() {
     var fromLeft = Math.random() < 0.5;
     return {
       x: fromLeft ? -20 : W + 20,
@@ -669,7 +752,7 @@ footer {
     };
   }
   for (var i = 0; i < N; i++) {
-    agents.push(spawn(i));
+    agents.push(spawn());
     agents[i].x = Math.random() * W; // stagger initial positions
   }
 
@@ -682,7 +765,6 @@ footer {
       var f = 0.06 * (1 - (d - R) / (margin - R));
       if (f > 0) { a.vx += (dx / d) * f; a.vy += (dy / d) * f; }
     }
-    // Speed limit
     var v = Math.sqrt(a.vx * a.vx + a.vy * a.vy);
     var vmax = 1.1;
     if (v > vmax) { a.vx *= vmax / v; a.vy *= vmax / v; }
@@ -713,7 +795,6 @@ footer {
     ctx.stroke();
     ctx.restore();
 
-    // Trajectories: thin gray polylines with fade
     agents.forEach(function (a) {
       step(a);
       if (a.trail.length < 2) return;
@@ -726,7 +807,6 @@ footer {
         ctx.lineTo(a.trail[i].x, a.trail[i].y);
         ctx.stroke();
       }
-      // Agent head
       ctx.fillStyle = "rgba(217, 164, 64, 0.8)";
       ctx.beginPath();
       ctx.arc(a.x, a.y, 1.8, 0, Math.PI * 2);
