@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element -- vinext has no next/image loader; these are
    pre-sized static PNGs extracted from the project reports. */
 /* eslint-disable @next/next/no-html-link-for-pages -- vinext preserves scroll position during client-side route transitions. */
-import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -95,31 +94,16 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 <strong>{item.highlight.value}</strong>
                 <p>{item.highlight.note}</p>
               </div>
-
-              {item.metrics && (
-                <div aria-label="Monte Carlo RMS position error comparison">
-                  <span>RMS position error · lower is better</span>
-                  {item.metrics.map((metric) => (
-                    <div className="metric-row" key={metric.label}>
-                      <span>{metric.label}</span>
-                      <div className="metric-track" aria-hidden="true">
-                        <span style={{ "--metric-width": metric.width } as CSSProperties} />
-                      </div>
-                      <strong>{metric.value}</strong>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </section>
         )}
 
         {media.length > 0 && (
           <section className="case-section-block" aria-labelledby="figures-title">
-            <h2 id="figures-title">What the Data Shows</h2>
+            <h2 id="figures-title">Project figures</h2>
             <div className="figure-grid">
               {media.map((figure) => (
-                <figure className="case-figure" key={figure.src}>
+                <figure className={`case-figure${item.slug === "turtlebot3-autonomy" ? " map-media" : ""}`} key={figure.src}>
                   <img src={figure.src} alt={figure.alt} loading="lazy" decoding="async" />
                   <figcaption>{figure.caption}</figcaption>
                 </figure>

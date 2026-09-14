@@ -41,7 +41,6 @@ export type CaseStudy = {
   technologies: string[];
   highlight?: { label: string; value: string; note: string };
   sections: { title: string; paragraphs: string[]; bullets?: string[] }[];
-  metrics?: { label: string; value: string; width: string }[];
   media?: { src: string; alt: string; caption: string; card?: boolean }[];
   pdfHref?: string;
   pdfLabel?: string;
@@ -55,10 +54,150 @@ export type Experience = {
   location: string;
   summary: string;
   focus: string[];
-  detail?: string;
+  bullets?: string[];
 };
 
 export const selectedWork: CaseStudy[] = [
+  {
+    slug: "turtlebot3-autonomy",
+    type: "Course project",
+    title: "TurtleBot3 Autonomy and Vision-Guided Maze Navigation",
+    shortTitle: "TurtleBot3 Autonomy",
+    status: "Completed",
+    period: "Fall 2025",
+    organization: "Intro to Robotics Research · Georgia Tech",
+    summary:
+      "Ella Lawrence and I programmed a TurtleBot3 to navigate a maze and recognize direction signs, combining ROS 2 navigation with a trained vision model.",
+    technologies: ["ROS 2", "Python", "OpenCV", "LIDAR", "Nav2", "SLAM", "TensorFlow/Keras", "TurtleBot3"],
+    repoHref: "https://github.com/victor-p28/Intro-To-Robotics-Research",
+    media: [
+      {
+        src: "/media/turtlebot3-autonomy/simulation-map.png",
+        alt: "Occupancy map of the simulated TurtleBot maze, with black walls, white free space, and gray unexplored space.",
+        caption: "Occupancy map from the Gazebo maze. Black cells mark obstacles; white cells mark free space.",
+        card: true,
+      },
+      {
+        src: "/media/turtlebot3-autonomy/physical-map.png",
+        alt: "Occupancy map from the physical TurtleBot environment, with an irregular outer boundary and interior walls.",
+        caption: "Occupancy map from the physical environment. The project used separate maps for simulation and hardware.",
+      },
+    ],
+    highlight: {
+      label: "Final system",
+      value: "Vision-guided maze navigation",
+      note: "Integrated mapping, localization, planning, feedback control, and CNN sign classification on a TurtleBot3",
+    },
+    sections: [
+      {
+        title: "Project Progression",
+        paragraphs: [
+          "This team project developed one autonomy capability at a time across the semester. We began with image-based object detection, then built closed-loop object chasing, waypoint navigation, SLAM, autonomous navigation, sign classification, and a final integrated maze solver.",
+          "The course provided the ROS package scaffolding, Gazebo maze environment, and labeled sign datasets. Ella and I wrote the node logic, controllers, training pipeline, and system integration together. We often developed pieces separately, then tested, debugged, and revised the full system as a team.",
+        ],
+      },
+      {
+        title: "Perception and Feedback Control",
+        paragraphs: [
+          "For object chasing, we detected a colored object through HSV thresholding in OpenCV and converted its image position into a camera bearing. We matched that bearing to the corresponding LIDAR measurements to estimate range, then used separate proportional-derivative loops for distance and heading control.",
+        ],
+        bullets: [
+          "Fused camera bearing with LIDAR range measurements",
+          "Ran the control loop at approximately 20 Hz",
+          "Used threshold bands to prevent continuous correction near the target",
+          "Separated detection, range estimation, control, and debugging into ROS 2 nodes",
+        ],
+      },
+      {
+        title: "Navigation and Mapping",
+        paragraphs: [
+          "We next implemented odometry-based waypoint navigation with reactive LIDAR obstacle avoidance. The following stage replaced dead reckoning with occupancy-grid maps created through SLAM and used AMCL and Nav2 to localize, plan, and follow collision-free paths.",
+          "We developed and tested the navigation stack in Gazebo and on a physical TurtleBot3 Burger. The project includes separate maps of the simulated and physical maze environments.",
+        ],
+      },
+      {
+        title: "Sign Classification",
+        paragraphs: [
+          "We trained a Keras convolutional neural network to classify direction signs from camera images. The training pipeline loaded the labeled image data, split it into training and evaluation sets, and saved the trained model for use by the final ROS 2 package.",
+        ],
+        bullets: [
+          "Keras Sequential model with convolution, pooling, batch normalization, dense, and dropout layers",
+          "OpenCV image processing and labeled sign datasets",
+          "Saved model shared directly with the final navigation system",
+        ],
+      },
+      {
+        title: "Final Integration",
+        paragraphs: [
+          "The final system combined the earlier work into a vision-guided maze solver. The main ROS 2 node used the camera and trained CNN to read signs at maze junctions, selected the corresponding direction, and sent navigation goals while using the map, AMCL pose estimate, and LIDAR data to move through the environment.",
+          "The project gave us experience working across perception, estimation, control, planning, machine learning, and system-level troubleshooting instead of treating each subsystem in isolation.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "autonomous-mobile-robot",
+    type: "Independent robotics project",
+    title: "Autonomous Mobile Robot Simulation & State Estimation",
+    shortTitle: "Autonomous Mobile Robot",
+    status: "In progress",
+    period: "2026 to Present",
+    organization: "Self-directed engineering",
+    summary:
+      "A Python simulation of a differential-drive robot with PID control, noisy sensors, and an Extended Kalman Filter, plus an initial C++ EKF implementation.",
+    technologies: ["Python", "C++", "Eigen", "CMake", "EKF", "PID control"],
+    repoHref: "https://github.com/victor-p28/Autonomous-Mobile-Robot",
+    highlight: {
+      label: "Evaluation setup",
+      value: "100 trials per method",
+      note: "Raw measurements, low-pass filtering, and EKF compared using RMS position error in simulation coordinates.",
+    },
+    sections: [
+      {
+        title: "Project Scope",
+        paragraphs: [
+          "The Python simulation combines robot motion, feedback control, noisy sensing, and state estimation. A separate C++ implementation explores the EKF with Eigen and CMake. ROS 2 integration and physical hardware remain planned work.",
+        ],
+      },
+      {
+        title: "Simulation and Control",
+        paragraphs: [
+          "I model a two-dimensional differential-drive robot with unicycle kinematics. I use separate PID controllers for heading and linear velocity, with a heading gate that prevents forward motion when the orientation error is too large.",
+        ],
+        bullets: [
+          "Two-dimensional differential-drive simulation",
+          "Nonlinear unicycle motion model",
+          "Dual PID control for heading and linear velocity",
+          "Wheel-slip, process-noise, and position-measurement models",
+        ],
+      },
+      {
+        title: "Evaluation Method",
+        paragraphs: [
+          "The script runs 100 trials for each method: raw measurements, a low-pass filter, and an Extended Kalman Filter. It computes the root mean squared two-dimensional position error for each trial, then reports the mean and standard deviation across trials. Coordinates use simulation units; no physical distance unit is specified.",
+        ],
+      },
+      {
+        title: "Evaluation Limits",
+        paragraphs: [
+          "Each method controls its own simulated run with separate random noise. The script does not fix a random seed, and its position-error calculation compares pre-step measurements with post-step robot positions. These results are exploratory, not a controlled benchmark on identical recorded trajectories.",
+        ],
+      },
+      {
+        title: "C++ Implementation",
+        paragraphs: [
+          "The repository also includes an EKF implementation in C++ with Eigen and CMake. Its example program performs a prediction and measurement update.",
+          "An automated comparison against the Python implementation is still needed before claiming numerical agreement.",
+        ],
+      },
+      {
+        title: "Next Steps",
+        paragraphs: [
+          "Next I will move the project into a ROS 2 Jazzy and colcon workspace. The planned sequence is a simulated robot node, separate controller and EKF nodes, Gazebo integration, and deployment to a physical rover.",
+        ],
+      },
+    ],
+  },
   {
     slug: "nonlinear-filtering-ballistic-reentry",
     type: "Course project",
@@ -68,7 +207,7 @@ export const selectedWork: CaseStudy[] = [
     period: "Spring 2026",
     organization: "AE 6505 Kalman Filtering · Georgia Tech",
     summary:
-      "I compared EKF, UKF, and particle-filter estimators for a ballistic reentry vehicle with nonlinear drag, heat-shield ablation, stochastic wind, and measurements from two ground-based radars.",
+      "I compared three nonlinear estimators using noisy radar measurements of a simulated reentry vehicle, examining when the filters diverged and why.",
     technologies: ["MATLAB", "EKF", "UKF", "Particle filter", "Sensor fusion", "Nonlinear estimation"],
     pdfHref: "/Victor_Pedroso_Ballistic_Reentry_Filtering.pdf",
     pdfLabel: "Read the project paper",
@@ -76,7 +215,7 @@ export const selectedWork: CaseStudy[] = [
     highlight: {
       label: "UKF downrange RMSE",
       value: "20.0 m",
-      note: "The UKF matched the 19.6 m particle-filter result using 10 sigma points instead of 5000 particles; the EKF reached 1080.9 m",
+      note: "One stochastic run: UKF 20.0 m, particle filter 19.6 m, EKF 1080.9 m. The UKF used 10 sigma points; the particle filter used 5000 particles.",
     },
     media: [
       {
@@ -168,132 +307,6 @@ export const selectedWork: CaseStudy[] = [
     ],
   },
   {
-    slug: "autonomous-mobile-robot",
-    type: "Independent robotics project",
-    title: "Autonomous Mobile Robot Simulation & State Estimation",
-    shortTitle: "Autonomous Mobile Robot",
-    status: "In progress",
-    period: "2026 to Present",
-    organization: "Self-directed engineering",
-    summary:
-      "I am developing a mobile robot simulation and state estimation stack in Python and C++. The current system includes differential-drive dynamics, PID control, sensor noise, Monte Carlo testing, and an Extended Kalman Filter.",
-    technologies: ["Python", "C++", "Eigen", "CMake", "ROS 2", "EKF", "PID control"],
-    repoHref: "https://github.com/victor-p28/Autonomous-Mobile-Robot",
-    metrics: [
-      { label: "Raw", value: "0.723", width: "100%" },
-      { label: "Low-pass", value: "0.456", width: "63%" },
-      { label: "EKF", value: "0.289", width: "40%" },
-    ],
-    highlight: {
-      label: "Best Monte Carlo result",
-      value: "0.289 RMS error",
-      note: "Extended Kalman Filter position estimate, compared with 0.723 for raw measurements",
-    },
-    sections: [
-      {
-        title: "Project Scope",
-        paragraphs: [
-          "I am building this autonomous mobile robot software stack from first principles. The work began with nonlinear motion and feedback control, then added noisy sensing, state estimation, testing, and a matching C++ implementation. The next stages use ROS 2 and physical hardware.",
-        ],
-      },
-      {
-        title: "Simulation and Control",
-        paragraphs: [
-          "I model a two-dimensional differential-drive robot with unicycle kinematics. I use separate PID controllers for heading and linear velocity, with a heading gate that prevents forward motion when the orientation error is too large.",
-        ],
-        bullets: [
-          "Two-dimensional differential-drive simulation",
-          "Nonlinear unicycle motion model",
-          "Dual PID control for heading and linear velocity",
-          "Wheel-slip, process-noise, and position-measurement models",
-        ],
-      },
-      {
-        title: "State Estimation and Results",
-        paragraphs: [
-          "I compared raw measurements, a low-pass filter, and an Extended Kalman Filter over repeated randomized Monte Carlo trials. RMS position error improved from 0.723 for raw measurements to 0.456 for the low-pass filter and 0.289 for the EKF.",
-        ],
-      },
-      {
-        title: "Cross-Implementation Validation",
-        paragraphs: [
-          "Once the Python version worked, I reimplemented the Extended Kalman Filter in C++ with Eigen and CMake and checked it numerically against the Python reference rather than assuming the port was correct.",
-          "Writing the same estimator twice and requiring the two to agree catches the class of bug a single implementation hides: a filter that is internally consistent, produces plausible-looking output, and is still wrong. The agreement between them is what makes the 0.289 result a property of the algorithm rather than of one implementation.",
-        ],
-      },
-      {
-        title: "Next Steps",
-        paragraphs: [
-          "Next I will move the project into a ROS 2 Jazzy and colcon workspace. The planned sequence is a simulated robot node, separate controller and EKF nodes, Gazebo integration, and deployment to a physical rover.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "turtlebot3-autonomy",
-    type: "Course project",
-    title: "TurtleBot3 Autonomy and Vision-Guided Maze Navigation",
-    shortTitle: "TurtleBot3 Autonomy",
-    status: "Completed",
-    period: "Fall 2025",
-    organization: "Intro to Robotics Research · Georgia Tech",
-    summary:
-      "Ella Lawrence and I developed a sequence of TurtleBot3 autonomy projects that culminated in a robot that navigated a maze and used a trained convolutional neural network to interpret direction signs.",
-    technologies: ["ROS 2", "Python", "OpenCV", "LIDAR", "Nav2", "SLAM", "TensorFlow/Keras", "TurtleBot3"],
-    repoHref: "https://github.com/victor-p28/Intro-To-Robotics-Research",
-    highlight: {
-      label: "Final system",
-      value: "Vision-guided maze navigation",
-      note: "Integrated mapping, localization, planning, feedback control, and CNN sign classification on a TurtleBot3",
-    },
-    sections: [
-      {
-        title: "Project Progression",
-        paragraphs: [
-          "This team project developed one autonomy capability at a time across the semester. We began with image-based object detection, then built closed-loop object chasing, waypoint navigation, SLAM, autonomous navigation, sign classification, and a final integrated maze solver.",
-          "The course provided the ROS package scaffolding, Gazebo maze environment, and labeled sign datasets. Ella and I wrote the node logic, controllers, training pipeline, and system integration together. We often developed pieces separately, then tested, debugged, and revised the full system as a team.",
-        ],
-      },
-      {
-        title: "Perception and Feedback Control",
-        paragraphs: [
-          "For object chasing, we detected a colored object through HSV thresholding in OpenCV and converted its image position into a camera bearing. We matched that bearing to the corresponding LIDAR measurements to estimate range, then used separate proportional-derivative loops for distance and heading control.",
-        ],
-        bullets: [
-          "Fused camera bearing with LIDAR range measurements",
-          "Ran the control loop at approximately 20 Hz",
-          "Used threshold bands to prevent continuous correction near the target",
-          "Separated detection, range estimation, control, and debugging into ROS 2 nodes",
-        ],
-      },
-      {
-        title: "Navigation and Mapping",
-        paragraphs: [
-          "We next implemented odometry-based waypoint navigation with reactive LIDAR obstacle avoidance. The following stage replaced dead reckoning with occupancy-grid maps created through SLAM and used AMCL and Nav2 to localize, plan, and follow collision-free paths.",
-          "We developed and tested the navigation stack in Gazebo and on a physical TurtleBot3 Burger. The project includes separate maps of the simulated and physical maze environments.",
-        ],
-      },
-      {
-        title: "Sign Classification",
-        paragraphs: [
-          "We trained a Keras convolutional neural network to classify direction signs from camera images. The training pipeline loaded the labeled image data, split it into training and evaluation sets, and saved the trained model for use by the final ROS 2 package.",
-        ],
-        bullets: [
-          "Keras Sequential model with convolution, pooling, batch normalization, dense, and dropout layers",
-          "OpenCV image processing and labeled sign datasets",
-          "Saved model shared directly with the final navigation system",
-        ],
-      },
-      {
-        title: "Final Integration",
-        paragraphs: [
-          "The final system combined the earlier work into a vision-guided maze solver. The main ROS 2 node used the camera and trained CNN to read signs at maze junctions, selected the corresponding direction, and sent navigation goals while using the map, AMCL pose estimate, and LIDAR data to move through the environment.",
-          "The project gave us experience working across perception, estimation, control, planning, machine learning, and system-level troubleshooting instead of treating each subsystem in isolation.",
-        ],
-      },
-    ],
-  },
-  {
     slug: "pde-optical-flow",
     type: "Course project",
     title: "Optical Flow Estimation via Horn-Schunck and ε-Regularized PDEs",
@@ -302,7 +315,7 @@ export const selectedWork: CaseStudy[] = [
     period: "Spring 2026",
     organization: "PDEs in Image Processing and Vision · Georgia Tech",
     summary:
-      "I derived and implemented standard Horn-Schunck and ε-regularized optical flow solvers, then compared their accuracy, convergence, and edge-preserving behavior on a controlled translation experiment.",
+      "I implemented two optical-flow solvers and compared their motion estimates, boundary behavior, and convergence on a controlled image translation.",
     technologies: ["Optical flow", "PDEs", "Finite differences", "Euler-Lagrange", "Horn-Schunck", "Numerical optimization"],
     pdfHref: "/Victor_Pedroso_PDE_Optical_Flow.pdf",
     pdfLabel: "Read the project report",
@@ -555,18 +568,16 @@ export const industryExperiences: Experience[] = [
     organization: "Volvo Autonomous Solutions",
     role: "Autonomous Vehicles Intern",
     dates: "May–August 2026",
-    location: "Greensboro, NC · Gothenburg, Sweden",
+    location: "Greensboro, NC",
     summary:
-      "I analyzed logs from autonomous trucks to understand why they stopped and how they behaved during stops in mining and quarry operations. I managed release notes for autonomous driving software delivered to partners and worked on making that process consistent across partners.",
-    detail:
-      "I helped organize how field issues were reported, prioritized, and assigned to the right teams. I also worked on an AI search agent to help the team find information across internal databases.",
-    focus: [
-      "AV log analysis",
-      "Stop-scenario characterization",
-      "Release documentation",
-      "Field-issue triage",
-      "AI search agent",
+      "Built tools for investigating autonomous-truck behavior and supporting the engineering team.",
+    bullets: [
+      "Built a Python pipeline to find truck stops in MCAP logs and map where and how long they occurred. Recorded log names and timestamps so engineers could investigate each stop.",
+      "Built a Claude API assistant that searches Confluence and Jira, answers engineering questions, and cites its sources. The full team of 6–7 people adopted it.",
+      "Compared U.S. route temperatures and estimated road grades with the trucks’ tested limits to identify promising routes and flag those needing further investigation.",
+      "Automated partner release notes from Excel to Word with VBA, cutting hours of work to minutes per run.",
     ],
+    focus: ["Python", "MCAP", "Confluence / Jira", "Claude API", "VBA"],
   },
   {
     organization: "Yamaha Motor Corporation",

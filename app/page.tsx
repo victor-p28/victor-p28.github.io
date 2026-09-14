@@ -17,45 +17,31 @@ function WorkItem({ item }: { item: CaseStudy }) {
   const cardImage = item.media?.find((entry) => entry.card);
 
   return (
-    <article className="work-item">
-      <div className="work-topline">
-        <span>{item.type}</span>
-        <span>{item.status}</span>
-      </div>
-      <h3>
-        <a href={`/work/${item.slug}`}>{item.shortTitle}</a>
-      </h3>
-      <p className="work-context">{item.organization} · {item.period}</p>
-      <p className="work-summary">{item.summary}</p>
-
-      {cardImage && (
-        <div className="work-media">
-          <img src={cardImage.src} alt={cardImage.alt} loading="lazy" decoding="async" />
+    <article className={`work-item${cardImage ? " work-item-with-media" : ""}`}>
+      <div>
+        <div className="work-topline">
+          <span>{item.type}</span>
+          <span>{item.status}</span>
         </div>
-      )}
-
-      {item.highlight && (
-        <div className="result">
-          <span>{item.highlight.label}</span>
-          <strong>{item.highlight.value}</strong>
-          <p>{item.highlight.note}</p>
-        </div>
-      )}
-
-      <ul className="tags" aria-label={`${item.title} tools and methods`}>
-        {item.technologies.map((technology) => <li key={technology}>{technology}</li>)}
-      </ul>
-
-      <div className="work-links">
-        <a className="text-link" href={`/work/${item.slug}`}>
-          View case study <span aria-hidden="true">→</span>
-        </a>
-        {item.repoHref && (
-          <a className="text-link" href={item.repoHref} target="_blank" rel="noreferrer">
-            View code on GitHub <span aria-hidden="true">→</span>
-          </a>
+        <h3><a href={`/work/${item.slug}`}>{item.shortTitle}</a></h3>
+        <p className="work-context">{item.organization} · {item.period}</p>
+        <p className="work-summary">{item.summary}</p>
+        {item.highlight && (
+          <p className="work-result"><strong>{item.highlight.value}</strong> · {item.highlight.note}</p>
         )}
+        <div className="work-links">
+          <a className="text-link" href={`/work/${item.slug}`}>View project</a>
+          {item.repoHref && (
+            <a className="text-link" href={item.repoHref} target="_blank" rel="noreferrer">GitHub</a>
+          )}
+        </div>
       </div>
+      {cardImage && (
+        <figure className={`work-media${item.slug === "turtlebot3-autonomy" ? " map-media" : ""}`}>
+          <a href={`/work/${item.slug}`}><img src={cardImage.src} alt={cardImage.alt} loading="lazy" decoding="async" /></a>
+          <figcaption>{item.slug === "turtlebot3-autonomy" ? "Gazebo maze occupancy map" : item.slug === "nonlinear-filtering-ballistic-reentry" ? "EKF estimate of the ballistic coefficient" : "Estimated optical flow field"}</figcaption>
+        </figure>
+      )}
     </article>
   );
 }
@@ -77,6 +63,7 @@ export default function Home() {
         <section className="hero" aria-labelledby="hero-title">
           <h1 id="hero-title">{profile.name}</h1>
           <p className="hero-intro">{profile.intro}</p>
+          <p className="hero-experience"><a href="#experience">Previously at Volvo Autonomous Solutions</a> · Python log analysis and engineering tools</p>
 
           <div className="availability" aria-label="Availability">
             <p className="availability-status">{availability.status}</p>
@@ -124,7 +111,11 @@ export default function Home() {
                   </div>
                 </div>
                 <p>{experience.summary}</p>
-                {experience.detail && <p>{experience.detail}</p>}
+                {experience.bullets && (
+                  <ul className="experience-bullets">
+                    {experience.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+                  </ul>
+                )}
                 <ul className="tags" aria-label={`${experience.organization} focus areas`}>
                   {experience.focus.map((focus) => <li key={focus}>{focus}</li>)}
                 </ul>

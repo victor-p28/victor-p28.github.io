@@ -69,6 +69,8 @@ test("orders selected work ahead of background, with the thesis demoted", async 
   const html = await (await render()).text();
 
   assert.ok(html.indexOf('id="work"') < html.indexOf('id="background"'));
+  assert.ok(html.indexOf('TurtleBot3 Autonomy') < html.indexOf('Autonomous Mobile Robot'));
+  assert.ok(html.indexOf('Autonomous Mobile Robot') < html.indexOf('Ballistic Reentry Filtering'));
   assert.match(html, /href="\/work\/galaxy-effective-radius-thesis"/);
   assert.doesNotMatch(html, /href="\/work\/autonomous-vehicle-curriculum"/);
   assert.doesNotMatch(html, /Currently building/);
@@ -88,10 +90,11 @@ test("shows a card figure on the projects that have one", async () => {
 test("surfaces the expanded Volvo scope", async () => {
   const html = await (await render()).text();
 
-  assert.match(html, /logs from autonomous trucks/);
-  assert.match(html, /I managed release notes/);
-  assert.match(html, /field issues were reported, prioritized, and assigned/);
-  assert.match(html, /I also worked on an AI search agent/);
+  assert.match(html, /MCAP logs/);
+  assert.match(html, /6–7 people adopted it/);
+  assert.match(html, /hours of work to minutes/);
+  assert.match(html, /estimated road grades/);
+  assert.ok(html.indexOf("Previously at Volvo Autonomous Solutions") < html.indexOf('id="work"'));
 });
 
 test("renders extracted figures on the ballistic reentry case study", async () => {
@@ -129,12 +132,14 @@ test("server-renders the PDE optical flow case study with figures", async () => 
   assert.match(html, /href="\/Victor_Pedroso_PDE_Optical_Flow\.pdf"/);
 });
 
-test("calls out the cross-implementation validation on the mobile robot", async () => {
+test("describes the mobile robot evaluation without unsupported validation claims", async () => {
   const html = await (await render("/work/autonomous-mobile-robot")).text();
 
-  assert.match(html, /Cross-Implementation Validation/);
+  assert.match(html, /100 trials for each method/);
+  assert.match(html, /simulation units/);
   assert.match(html, /C\+\+ with Eigen and CMake/);
-  assert.match(html, /internally consistent, produces plausible-looking output, and is still wrong/);
+  assert.match(html, /still needed before claiming numerical agreement/);
+  assert.doesNotMatch(html, /0\.289|property of the algorithm|Best Monte Carlo result/);
 });
 
 test("no longer serves a second copy of the site", async () => {
